@@ -97,7 +97,8 @@ def get_optimizer(model, tuned_parameters, x, y):
                              scoring="neg_mean_squared_error",
                              cv=10,
                              return_train_score=False,
-                             verbose=0)
+                             n_jobs=-1,
+                             verbose=10)
     optimizer.fit(x, y)
     score_lists = ['param_' + k for k in tuned_parameters.keys()]
     score_lists.extend(['mean_test_score', 'std_test_score', 'rank_test_score'])
@@ -106,8 +107,9 @@ def get_optimizer(model, tuned_parameters, x, y):
 
 
 nn_parameters = {
-    'hidden_layer_sizes': list(range(5, 100, 5)),
+    'hidden_layer_sizes': list(range(10, 90, 5)),
     'activation': ['logistic', 'tanh', 'relu'],
+    'solver': ['lbfgs', 'sgd', 'adam'],
 }
 
 nno = neural_network.MLPRegressor(max_iter=20000, random_state=77)
