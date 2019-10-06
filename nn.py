@@ -74,6 +74,36 @@ def metrics_report(model, x_train, y_train, x_test, y_test):
     print()
 
 
+# Optimization
+def get_optimizer(model, tuned_parameters, x, y):
+    optimizer = GridSearchCV(model,
+                             tuned_parameters,
+                             scoring="neg_mean_squared_error",
+                             cv=10,
+                             return_train_score=False,
+                             n_jobs=-1,
+                             verbose=5)
+    optimizer.fit(x, y)
+    score_lists = ['param_' + k for k in tuned_parameters.keys()]
+    score_lists.extend(['mean_test_score', 'std_test_score', 'rank_test_score'])
+    results = pd.DataFrame(optimizer.cv_results_)[score_lists]
+    return optimizer, results
+
+
+nn_parameters = {
+    'hidden_layer_sizes': list(range(10, 200, 5)),
+    # 'activation': ['logistic', 'tanh', 'relu'],
+}
+
+# nno = neural_network.MLPRegressor(max_iter=30000, random_state=77, solver='adam', activation='relu')
+# nn_optimizer, nn_results = get_optimizer(nno, nn_parameters, x_train_scaled, y_train_scaled)
+# print(nn_results.sort_values(by='rank_test_score').head(20))
+# print(nn_optimizer.best_params_)
+# print(nn_optimizer.best_estimator_)
+#
+# metrics_report(nn_optimizer.best_estimator_, x_train_scaled, y_train_scaled, x_test_scaled, y_test_scaled)
+
+
 # custom cross validation reports
 def get_cross_val_metrics(model, x, y):
     scoring = ['explained_variance',
@@ -84,38 +114,43 @@ def get_cross_val_metrics(model, x, y):
     return pd.DataFrame(scores).mean()
 
 
-nnet = neural_network.MLPRegressor(30, max_iter=20000, random_state=77)
-mean_score = get_cross_val_metrics(nnet, x_train_scaled, y_train_scaled)
+# based on the optimizer, 190 layers, adam, relu
+nn_best = neural_network.MLPRegressor(max_iter=30000, random_state=77, solver='adam', activation='relu',
+                                      hidden_layer_sizes=190)
+
+mean_score = get_cross_val_metrics(nn_best, x_train_scaled, y_train_scaled)
 print(f"cross val score: {mean_score}")
 print()
 
 
-# Optimization
-def get_optimizer(model, tuned_parameters, x, y):
-    optimizer = GridSearchCV(model,
-                             tuned_parameters,
-                             scoring="neg_mean_squared_error",
-                             cv=10,
-                             return_train_score=False,
-                             n_jobs=-1,
-                             verbose=10)
-    optimizer.fit(x, y)
-    score_lists = ['param_' + k for k in tuned_parameters.keys()]
-    score_lists.extend(['mean_test_score', 'std_test_score', 'rank_test_score'])
-    results = pd.DataFrame(optimizer.cv_results_)[score_lists]
-    return optimizer, results
+nn_best.fit(x_train_scaled, y_train_scaled)
+nn_pred = nn_best.predict(x_test_scaled)
+
+# inverse scale predicted results
+y_scaler = MinMaxScaler()
+y_scaler.min_, y_scaler.scale_ = scaler.min_[anom_index], scaler.scale_[anom_index]
+
+nn_pred_inverse = y_scaler.inverse_transform(nn_pred.reshape(-1, 1))
+y_test_inverse = y_scaler.inverse_transform(y_test_scaled.reshape(-1, 1))
 
 
-nn_parameters = {
-    'hidden_layer_sizes': list(range(10, 90, 5)),
-    'activation': ['logistic', 'tanh', 'relu'],
-    'solver': ['lbfgs', 'sgd', 'adam'],
-}
+# function that transform anom to class (-1, 0, 1)
+def to_weather_int(y):
+    if y <= -0.5:
+        return -1
+    elif y >= 0.5:
+        return 1
+    else:
+        return 0
 
-nno = neural_network.MLPRegressor(max_iter=20000, random_state=77)
-nn_optimizer, nn_results = get_optimizer(nno, nn_parameters, x_train_scaled, y_train_scaled)
-print(nn_results.sort_values(by='rank_test_score').head(20))
-print(nn_optimizer.best_params_)
-print(nn_optimizer.best_estimator_)
 
-metrics_report(nn_optimizer.best_estimator_, x_train_scaled, y_train_scaled, x_test_scaled, y_test_scaled)
+# function to transform anom array to weather class array
+def to_weather_class(y):
+    df = pd.DataFrame({cname_weather_class: y[:, 0]})
+    df[cname_weather_class] = df[cname_weather_class].apply(func=to_weather_int)
+    df[cname_weather_class] = df[cname_weather_class].astype('category')
+    return df
+
+
+accuracy = metrics.accuracy_score(to_weather_class(y_test_inverse), to_weather_class(nn_pred_inverse))
+print(accuracy)
