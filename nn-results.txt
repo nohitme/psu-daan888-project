@@ -1,0 +1,124 @@
+   param_hidden_layer_sizes  mean_test_score  std_test_score  rank_test_score
+0                        60        -0.000004        0.000001                1
+9                       105        -0.000005        0.000005                2
+6                        90        -0.000006        0.000001                3
+26                      190        -0.000007        0.000004                4
+3                        75        -0.000007        0.000002                5
+23                      175        -0.000007        0.000003                6
+2                        70        -0.000007        0.000004                7
+5                        85        -0.000008        0.000003                8
+10                      110        -0.000008        0.000002                9
+1                        65        -0.000008        0.000007               10
+17                      145        -0.000008        0.000006               11
+20                      160        -0.000009        0.000005               12
+7                        95        -0.000009        0.000002               13
+11                      115        -0.000010        0.000003               14
+14                      130        -0.000010        0.000007               15
+4                        80        -0.000011        0.000005               16
+8                       100        -0.000011        0.000001               17
+15                      135        -0.000011        0.000003               18
+24                      180        -0.000012        0.000003               19
+18                      150        -0.000013        0.000003               20
+{'hidden_layer_sizes': 60}
+MLPRegressor(activation='relu', alpha=0.0001, batch_size='auto', beta_1=0.9,
+             beta_2=0.999, early_stopping=False, epsilon=1e-08,
+             hidden_layer_sizes=60, learning_rate='constant',
+             learning_rate_init=0.001, max_iter=30000, momentum=0.9,
+             n_iter_no_change=10, nesterovs_momentum=True, power_t=0.5,
+             random_state=77, shuffle=True, solver='adam', tol=0.0001,
+             validation_fraction=0.1, verbose=False, warm_start=False)
+R2 Score (train): 1.0000
+MSE (train) : 0.0000
+R2 Score (test): 1.0000
+MSE (test) : 0.0000
+
+R2 Ratio (test / train): 1.0000
+MSE Ratio (test / train): 1.0054
+
+Explained variance: 1.0000
+
+cross val score: fit_time                        5.942161
+score_time                      0.017160
+test_explained_variance         0.999924
+train_explained_variance        0.999925
+test_neg_mean_squared_error    -0.000004
+train_neg_mean_squared_error   -0.000004
+test_r2                         0.999900
+train_r2                        0.999901
+dtype: float64
+
+0.9959176837565683
+
+Process finished with exit code 0
+
+===== Full data set without Humidity
+   param_hidden_layer_sizes  mean_test_score  std_test_score  rank_test_score
+0                        60        -0.000005        0.000001                1
+1                        65        -0.000005        0.000002                2
+2                        70        -0.000005        0.000003                3
+14                      130        -0.000005        0.000003                4
+4                        80        -0.000005        0.000004                5
+7                        95        -0.000006        0.000004                6
+5                        85        -0.000006        0.000002                7
+20                      160        -0.000006        0.000005                8
+6                        90        -0.000007        0.000004                9
+8                       100        -0.000007        0.000005               10
+16                      140        -0.000008        0.000002               11
+19                      155        -0.000008        0.000003               12
+9                       105        -0.000008        0.000008               13
+3                        75        -0.000009        0.000011               14
+11                      115        -0.000009        0.000004               15
+12                      120        -0.000009        0.000002               16
+25                      185        -0.000010        0.000003               17
+10                      110        -0.000010        0.000002               18
+18                      150        -0.000011        0.000003               19
+21                      165        -0.000012        0.000005               20
+{'hidden_layer_sizes': 60}
+MLPRegressor(activation='relu', alpha=0.0001, batch_size='auto', beta_1=0.9,
+             beta_2=0.999, early_stopping=False, epsilon=1e-08,
+             hidden_layer_sizes=60, learning_rate='constant',
+             learning_rate_init=0.001, max_iter=30000, momentum=0.9,
+             n_iter_no_change=10, nesterovs_momentum=True, power_t=0.5,
+             random_state=77, shuffle=True, solver='adam', tol=0.0001,
+             validation_fraction=0.1, verbose=False, warm_start=False)
+R2 Score (train): 0.9998
+MSE (train) : 0.0000
+R2 Score (test): 0.9998
+MSE (test) : 0.0000
+
+R2 Ratio (test / train): 1.0000
+MSE Ratio (test / train): 1.0092
+
+Explained variance: 0.9999
+
+pause, enter...
+
+cross val score: fit_time                        6.720863
+score_time                      0.018837
+test_explained_variance         0.999929
+train_explained_variance        0.999931
+test_neg_mean_squared_error    -0.000005
+train_neg_mean_squared_error   -0.000004
+test_r2                         0.999886
+train_r2                        0.999887
+dtype: float64
+
+0.9883572926025757
+
+Process finished with exit code 0
+
+=== DROP SST ====
+
+cross val score: fit_time                        5.619333
+score_time                      0.015386
+test_explained_variance         0.999908
+train_explained_variance        0.999909
+test_neg_mean_squared_error    -0.000011
+train_neg_mean_squared_error   -0.000011
+test_r2                         0.999724
+train_r2                        0.999723
+dtype: float64
+
+0.9919400422886093
+
+Process finished with exit code 0
