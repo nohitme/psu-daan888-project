@@ -26,13 +26,30 @@ cname_anom = 'Anom'
 cname_weather_class = 'weather_class'
 
 cols = list(data.columns.values)
+
+# we don't really need date
+cols.pop(cols.index('Date'))
+# remove Humidity for now
+# cols.pop(cols.index('Humidity'))
+# cols.pop(cols.index('Sea Surface Temp'))
 cols.pop(cols.index(cname_anom))
 cols.pop(cols.index(cname_weather_class))
 data = data[cols + [cname_anom]]
 
+print(data.isnull().sum())
+
+# input('pause, enter')
+
+# convert month and year to categorical type
+data = data.astype({'Month': 'category', 'Year': 'category', 'Day': 'category'})
+print(data.dtypes)
+
 # generate dummies
 data_dummies = pd.get_dummies(data)
+# print(data_dummies.head(5))
 # print(data_dummies.dtypes)
+
+# input("pause, enter...")
 
 # Split data set
 train, test = train_test_split(data_dummies, test_size=0.3, random_state=87)
@@ -91,8 +108,9 @@ def get_optimizer(model, tuned_parameters, x, y):
 
 
 nn_parameters = {
-    'hidden_layer_sizes': list(range(10, 200, 5)),
+    'hidden_layer_sizes': list(range(60, 200, 5)),
     # 'activation': ['logistic', 'tanh', 'relu'],
+    # 'solver': ['lbfgs', 'sgd', 'adam'],
 }
 
 # nno = neural_network.MLPRegressor(max_iter=30000, random_state=77, solver='adam', activation='relu')
@@ -102,6 +120,8 @@ nn_parameters = {
 # print(nn_optimizer.best_estimator_)
 #
 # metrics_report(nn_optimizer.best_estimator_, x_train_scaled, y_train_scaled, x_test_scaled, y_test_scaled)
+#
+# input("pause, enter...")
 
 
 # custom cross validation reports
@@ -114,9 +134,9 @@ def get_cross_val_metrics(model, x, y):
     return pd.DataFrame(scores).mean()
 
 
-# based on the optimizer, 190 layers, adam, relu
+# based on the optimizer, 60 layers, adam, relu
 nn_best = neural_network.MLPRegressor(max_iter=30000, random_state=77, solver='adam', activation='relu',
-                                      hidden_layer_sizes=190)
+                                      hidden_layer_sizes=60)
 
 mean_score = get_cross_val_metrics(nn_best, x_train_scaled, y_train_scaled)
 print(f"cross val score: {mean_score}")
@@ -154,3 +174,4 @@ def to_weather_class(y):
 
 accuracy = metrics.accuracy_score(to_weather_class(y_test_inverse), to_weather_class(nn_pred_inverse))
 print(accuracy)
+

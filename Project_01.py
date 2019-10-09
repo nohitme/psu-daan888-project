@@ -328,6 +328,7 @@ oni_2 = pd.concat([ oni89,oni90,oni91,oni92,oni93,oni94,oni95,oni96,oni97,oni98]
 # check shape and missing values
 print(oni_2.isnull().sum(), "\n")
 oni_2.shape
+oni_2.to_csv('oni_2.csv')
 # Create a scatterplot matrix for new data consisting of columns [Zonal Winds,
 # Meridional Winds, Humidity, Air Temp, Sea Surface Temp]
 ##  oni_3 is created to look at the independent variables of interest
